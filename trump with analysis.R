@@ -1,4 +1,4 @@
-########################Step 1: Load the necessary packages
+##########Load the necessary packages##########
 
 library(devtools)
 library(ROAuth)
@@ -13,8 +13,7 @@ library(RTextTools)
 
 #also check this for more text analyis: http://www.r-bloggers.com/intro-to-text-analysis-with-r/
 
-
-########################Step 2:  Connect to twitter
+##########Step 2:  Connect to twitter##########
 
 reqURL <- "https://apps.twitter.com/app/9392321"
 accessURL <- "https://apps.twitter.com/app/9392321/access_token"
@@ -34,11 +33,9 @@ setup_twitter_oauth(consumer_key,
                     access_secret)
 
 #the cainfo parameter is necessary only on Windows
-
 register_mysql_backend("mv", user='root', password='Belly890', host='127.0.0.1')
 
-
-###################Step 3: Acquire DATA
+##########Step 3: Acquire DATA##########
 
 search_twitter_and_store("#Trump", table_name = "tweets1", since='2016-1-12', until= '2016-1-13')
 search_twitter_and_store("#Trump", table_name = "tweets2", since='2016-1-11', until= '2016-1-12')
@@ -48,17 +45,15 @@ search_twitter_and_store("#Trump", table_name = "tweets5", since='2016-1-8', unt
 search_twitter_and_store("#Trump", table_name = "tweets6", since='2016-1-7', until= '2016-1-8')
 search_twitter_and_store("#Trump", table_name = "tweets7", since='2016-1-6', until= '2016-1-7')
 
-
 #get sample data
 trump1 <- searchTwitter("#Trump", n=500, lang="en", resultType="recent")
 
 #need to filter out news updates  RT@
 
-#clean and prepare the data
+##########clean and prepare the data##########
 trump1.1 <- do.call("rbind", lapply(trump1, as.data.frame))  #save text: deals with the emoji issue
 trump1.2 <- trump1.1$text
 #create column with response valence
-
 
 # remove retweet entities
 trump3 = gsub("(RT|via)((?:\\b\\W*@\\w+)+)", " ", trump1.2)
@@ -101,9 +96,7 @@ write.table(trump5, file = "tr.csv", sep = ",", col.names = NA)
 
 trump10 <- read.csv("tr2.csv", header=FALSE, sep = ",")
 
-
-
-#######################Step 4: Sentiment Analysis
+##########Step 4: Sentiment Analysis##########
 
 trump_all <- trump10[,1]
 trump_sentiment <- trump10[,2]
@@ -122,15 +115,11 @@ table(trump_sentiment[116:145], predicted)
 recall_accuracy(trump_sentiment[116:145], predicted)
 #.67
 
-#############graph
-
+##########graph##########
 names(trump10)[names(trump10)=="V2"] <- "valence"
 names(trump10)[names(trump10)=="V1"] <- "tweets"
 
-
-
-
-########################################Other methods
+##########Other methods##########
 
 mat= create_matrix(trump_all, language="english", 
                    removeStopwords=FALSE, removeNumbers=TRUE, 
@@ -152,25 +141,14 @@ results = classify_models(container, models)
 
 table(as.numeric(as.numeric(sentiment_all[161:180])), results[,"FORESTS_LABEL"])
 
-
 recall_accuracy(as.numeric(as.numeric(sentiment_all[161:180])), results[,"FORESTS_LABEL"])
 
-
-
-#########test SVM
-
+##########test SVM##########
 library(e1071)
-
 data(cats, package="MASS")
-
 inputData <- data.frame(cats[, c (2,3)], response = as.factor(cats$Sex)) # response as factor
 
-
-
-
-
-################test pulling saved mySQL tables
-
+##########test pulling saved mySQL tables##########
 db = dbConnect(MySQL(), user='root', password='Belly890', dbname='mv', host='127.0.0.1')
 
 db1 <- dbGetQuery(db, "
@@ -179,5 +157,3 @@ db1 <- dbGetQuery(db, "
                   ")
 
 #got ya!
-
-
