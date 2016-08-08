@@ -4,7 +4,6 @@ library(twitteR)
 library("wordcloud")
 library("tm")
 
-
 reqURL <- "https://apps.twitter.com/app/9392321"
 accessURL <- "https://apps.twitter.com/app/9392321/access_token"
 authURL <- "https://apps.twitter.com/app/9392321/authorize"
@@ -43,4 +42,3 @@ dm2 <- dm1[-c(5, 13, 18, 19), ]
 dm3 <- dm2[1:150,]
 wordcloud(dm2$word, dm2$freq, random.order = FALSE, colors = brewer.pal(8, "Dark2"))
 wordcloud(dm3$word, dm3$freq, random.order = FALSE, colors = brewer.pal(8, "Dark2"))
-
